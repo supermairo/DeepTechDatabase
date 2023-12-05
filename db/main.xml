@@ -29,6 +29,17 @@
             ALTER TABLE "Project" ADD FOREIGN KEY ("SocialIssue") REFERENCES "SocialIssue" ("SocialIssueID");
         </sql>
     </changeSet>
+        <!-- 新しいChangeSet: カラム削除 -->
+    <changeSet id="2" author="supermairo">
+        <dropColumn tableName="Project" columnName="Contribution"/>
+    </changeSet>
+    <changeSet id="3" author="supermairo">
+    <addColumn tableName="Project">
+        <column name="Approach" type="varchar">
+            <!-- ここに必要な場合は追加の属性や制約を指定 -->
+        </column>
+    </addColumn>
+</changeSet>
 </databaseChangeLog>
 
 
