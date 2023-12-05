@@ -1,0 +1,35 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="supermairo">
+        <sql>
+            CREATE TABLE "Project" (
+            "ProjectID" int PRIMARY KEY,
+            "Novelty" varchar,
+            "Contribution" varchar,
+            "DeepTech" int,
+            "SocialIssue" int
+            );
+
+            CREATE TABLE "DeepTech" (
+            "TechID" int PRIMARY KEY,
+            "Description" varchar
+            );
+
+            CREATE TABLE "SocialIssue" (
+            "SocialIssueID" int PRIMARY KEY,
+            "Description" varchar,
+            "BottleNeck" varchar
+            );
+
+            ALTER TABLE "Project" ADD FOREIGN KEY ("DeepTech") REFERENCES "DeepTech" ("TechID");
+
+            ALTER TABLE "Project" ADD FOREIGN KEY ("SocialIssue") REFERENCES "SocialIssue" ("SocialIssueID");
+        </sql>
+    </changeSet>
+</databaseChangeLog>
+
+
+
