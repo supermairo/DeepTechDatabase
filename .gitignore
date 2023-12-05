@@ -1,1 +1,4 @@
 .devcontainer/
+
+db/*
+!db/main.xml
