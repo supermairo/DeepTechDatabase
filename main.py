@@ -3,7 +3,7 @@ import psycopg2.extras
 import psycopg2
 
 
-def notion_input(token, database, property):
+def notion_input(token, database, property, msg):
     url = "https://api.notion.com/v1/pages"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -17,7 +17,7 @@ def notion_input(token, database, property):
                 "rich_text": [
                     {
                         "text": {
-                            "content": "Hello world"
+                            "content": msg
                         }
                     }
                 ]

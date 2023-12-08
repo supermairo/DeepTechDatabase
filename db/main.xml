@@ -56,6 +56,30 @@
                     oldColumnName="TechID"
                     newColumnName="ID"/>
     </changeSet>
+    <!-- 上記のカラム名はID以外キャメルケースであったが、下記のchangesetによって、残りすべてのカラムもすべて大文字に変換した。 -->
+    <changeSet id="5" author="supermairo">
+        <renameColumn tableName="DeepTech"
+                    oldColumnName="Description"
+                    newColumnName="DESCRIPTION"/>
+        <renameColumn tableName="Project"
+                    oldColumnName="Novelty"
+                    newColumnName="NOVELTY"/>
+        <renameColumn tableName="Project"
+                    oldColumnName="DeepTech"
+                    newColumnName="DEEPTECH"/>
+        <renameColumn tableName="Project"
+                    oldColumnName="SocialIssue"
+                    newColumnName="SOCIALISSUE"/>
+        <renameColumn tableName="Project"
+                    oldColumnName="Approach"
+                    newColumnName="APPROACH"/>
+        <renameColumn tableName="SocialIssue"
+                    oldColumnName="Description"
+                    newColumnName="DESCRIPTION"/>
+        <renameColumn tableName="SocialIssue"
+                    oldColumnName="BottleNeck"
+                    newColumnName="BOTTLENECK"/>
+    </changeSet>
 </databaseChangeLog>
 
 
