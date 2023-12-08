@@ -44,4 +44,4 @@ def get_value_from_db(table, id, prop, keys):
     result = cursor.fetchone()
     conn.close()
     # プロパティの値を返す（値がない場合はNone）
-    return result[0] if result else None
+    return result[0] if result else None, table, id
