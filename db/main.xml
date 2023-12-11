@@ -80,6 +80,21 @@
                     oldColumnName="BottleNeck"
                     newColumnName="BOTTLENECK"/>
     </changeSet>
+    <!-- 全てのテーブルに"TITLE"カラムを追加する -->
+    <changeSet id="6" author="supermairo">
+        <addColumn tableName="Project">
+            <column name="TITLE" type="varchar">
+            </column>
+        </addColumn>
+        <addColumn tableName="DeepTech">
+            <column name="TITLE" type="varchar">
+            </column>
+        </addColumn>
+        <addColumn tableName="SocialIssue">
+            <column name="TITLE" type="varchar">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
