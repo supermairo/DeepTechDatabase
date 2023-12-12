@@ -23,21 +23,29 @@ def notion_input(token, database, property, msg, id):
     }
     response = requests.post(url, headers=headers, json=data)
     result = response.json()
+
+    # 編集しようとしているプロパティのデータ型を確認
+    url = f"https://api.notion.com/v1/databases/{database}"
+    db_info = requests.get(url, headers=headers).json()
+    property_type = db_info["properties"][property]["type"]
+
+    # データ型に応じたJSONの作成
+    if property_type == "text":
+        property_json = {
+            "rich_text": [{"text": {"content": msg}}]
+        }
+    elif property_type == "title":
+        property_json = {
+            "title": [{"text": {"content": msg}}]
+        }
+
     if (result["results"]):
         # この値がある場合は更新する
         page_id = result["results"][0]["id"]
         url = f"https://api.notion.com/v1/pages/{page_id}"
         data = {
             "properties": {
-                property: {
-                    "rich_text": [
-                        {
-                            "text": {
-                                "content": msg
-                            }
-                        }
-                    ]
-                },
+                property: property_json,
                 "ID": {
                     "number": id
                 }
@@ -51,15 +59,7 @@ def notion_input(token, database, property, msg, id):
         data = {
             "parent": {"database_id": database},
             "properties": {
-                property: {
-                    "rich_text": [
-                        {
-                            "text": {
-                                "content": msg
-                            }
-                        }
-                    ]
-                },
+                property: property_json,
                 "ID": {
                     "number": id  # IDを数値型として設定
                 }
