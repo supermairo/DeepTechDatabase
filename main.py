@@ -30,7 +30,7 @@ def notion_input(token, database, property, msg, id):
     property_type = db_info["properties"][property]["type"]
 
     # データ型に応じたJSONの作成
-    if property_type == "text":
+    if property_type == "rich_text":
         property_json = {
             "rich_text": [{"text": {"content": msg}}]
         }
