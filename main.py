@@ -1,6 +1,15 @@
 import requests
 import psycopg2.extras
 import psycopg2
+import json
+from openai import OpenAI
+
+# initialize
+keys = json.load(open("secrets.json", "r"))
+api_key = keys["API_KEYS"]["OPENAI"]
+token = keys["notion"]["token"]
+
+# F0
 
 
 def notion_input(token, database, property, msg, id):
@@ -86,3 +95,41 @@ def get_value_from_db(table, id, prop, keys):
     conn.close()
     # プロパティの値を返す（値がない場合はNone）
     return result[0] if result else None, table, id
+
+# F1
+
+
+def generate_pitch(pj_id):
+    # データベースから対応する項目を抽出
+    desc = get_value_from_db('"SocialIssue"', pj_id, "DESCRIPTION", keys)[0]
+    bottle = get_value_from_db('"SocialIssue"', pj_id, "BOTTLENECK", keys)[0]
+    approach = get_value_from_db('"Project"', pj_id, "APPROACH", keys)[0]
+    novelty = get_value_from_db('"Project"', pj_id, "NOVELTY", keys)[0]
+    title = get_value_from_db('"Project"', pj_id, "TITLE", keys)[0]
+
+    # promptの作成
+    prompt = (
+        f"下記の要件を満たしながら、{title}というプロジェクトの概要説明文を生成してください。\n\n"
+        "1. 下記の4項目の情報に基づく\n"
+        f"取り組む社会課題の概要\n{desc}\n\n"
+        f"解決に至らないボトルネック\n{bottle}\n\n"
+        f"本プロジェクトの取る解決のアプローチ\n{approach}\n\n"
+        f"このアプローチの新規性\n{novelty}\n\n"
+        "2. 形式はmarkdownとする\n"
+        "3. 下記の構成で文章を記述する\n"
+        "見出し1: [適切な見出し]\n"
+        "本文1: 注目する社会課題（200文字程度）\n"
+        "見出し2: [適切な見出し]\n"
+        "本文2: 本プロジェクトが提案する解決方法（200文字程度）\n\n"
+        "以上"
+    )
+
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "user", "content": prompt},
+        ]
+    )
+    draft = response.choices[0].message.content
+    return draft
