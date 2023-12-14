@@ -5,5 +5,6 @@ db/*
 
 secrets.json
 tmp.py
+memo.txt
 
 __pycache__/
