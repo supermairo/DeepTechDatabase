@@ -95,6 +95,20 @@
             </column>
         </addColumn>
     </changeSet>
+    <!-- "SocialIssue"テーブルに"MASLOW_LEVEL"カラムを追加する -->
+    <changeSet id="7" author="supermairo">
+        <addColumn tableName="SocialIssue">
+            <column name="MASLOW_LEVEL" type="varchar">
+            </column>
+        </addColumn>
+    </changeSet>
+    <!-- "SocialIssue"テーブルの"MASLOW_LEVEL"カラムを整数型にする -->
+    <changeSet id="8" author="supermairo">
+        <modifyDataType tableName="SocialIssue"
+                        columnName="MASLOW_LEVEL"
+                        newDataType="int"/>
+    </changeSet>
+    
 </databaseChangeLog>
 
 
