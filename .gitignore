@@ -1,6 +1,5 @@
 .devcontainer/
 __pycache__/
-.github/
 
 db/*
 !db/main.xml
