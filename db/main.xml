@@ -108,6 +108,44 @@
                         columnName="MASLOW_LEVEL"
                         newDataType="int"/>
     </changeSet>
+    <!-- "Project"テーブルに新しく"GROUP","COUNTRY","INDEX"の3つのカラムを作成 -->
+    <changeSet id="9" author="supermairo">
+        <addColumn tableName="Project">
+            <column name="GROUP" type="varchar">
+            </column>
+        </addColumn>
+        <addColumn tableName="Project">
+            <column name="COUNTRY" type="varchar">
+            </column>
+        </addColumn>
+        <addColumn tableName="Project">
+            <column name="INDEX" type="varchar">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="10" author="supermairo">
+        <!-- "GROUP"カラムの削除 -->
+        <dropColumn tableName="Project" columnName="GROUP"/>
+
+        <!-- 新しい "GROUP_NAME" カラムの追加 -->
+        <addColumn tableName="Project">
+            <column name="GROUP_NAME" type="varchar(255)">
+                <!-- ここに適切なデフォルト値や制約を追加できます -->
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="11" author="supermairo">
+        <!-- "GROUP"カラムの削除 -->
+        <dropColumn tableName="Project" columnName="INDEX"/>
+
+        <!-- 新しい "GROUP_NAME" カラムの追加 -->
+        <addColumn tableName="Project">
+            <column name="TARGET_INDEX" type="varchar">
+                <!-- ここに適切なデフォルト値や制約を追加できます -->
+            </column>
+        </addColumn>
+    </changeSet>
+
     
 </databaseChangeLog>
 
