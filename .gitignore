@@ -1,4 +1,6 @@
 .devcontainer/
+__pycache__/
+.github/
 
 db/*
 !db/main.xml
@@ -6,5 +8,3 @@ db/*
 secrets.json
 tmp.py
 memo.txt
-
-__pycache__/
