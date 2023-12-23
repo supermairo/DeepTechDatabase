@@ -145,8 +145,14 @@
             </column>
         </addColumn>
     </changeSet>
-
-    
+    <changeSet id="12" author="supermairo">
+        <addColumn tableName="SocialIssue">
+            <column name="INDICATOR" type="TEXT">
+            </column>
+            <column name="INDICATOR_DESC" type="TEXT">
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 
