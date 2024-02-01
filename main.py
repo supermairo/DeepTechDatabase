@@ -2,7 +2,7 @@ import requests
 import psycopg2.extras
 import psycopg2
 import json
-from openai import OpenAI
+# from openai import OpenAI
 
 # initialize
 keys = json.load(open("secrets.json", "r"))
@@ -133,3 +133,34 @@ def generate_pitch(pj_id):
     )
     draft = response.choices[0].message.content
     return draft
+
+# F4
+
+
+def getProject():
+    # GraphQLのクエリを定義
+    query = """
+    {
+    Project(limit: 1, where: { post: { _contains: { slack: "" } }, visibility: { _eq: "public" } }
+    ) {
+        title
+        group_name
+        country
+        intro
+        url
+    }
+    }
+    """
+    # GraphQLのエンドポイント
+    url = keys["api_urls"]["hasura"]
+    # ヘッダーの設定
+    headers = {
+        "Content-Type": "application/json",
+        "x-hasura-admin-secret": keys["API_KEYS"]["HASURA"]
+    }
+    # リクエストの送信
+    response = requests.post(url, headers=headers, json={"query": query})
+    # 結果の取得
+    data = response.json()
+    # 結果を返す
+    return data["data"]["Project"][0]
