@@ -3,6 +3,8 @@ import psycopg2.extras
 import psycopg2
 import json
 # from openai import OpenAI
+# 今日の日付を取得するのに使う
+from datetime import datetime
 
 # initialize
 keys = json.load(open("secrets.json", "r"))
@@ -148,6 +150,8 @@ def getProject():
         country
         intro
         url
+        id
+        post
     }
     }
     """
@@ -164,3 +168,43 @@ def getProject():
     data = response.json()
     # 結果を返す
     return data["data"]["Project"][0]
+
+
+def postProject(project):
+    # slackに投稿するメッセージの作成
+    # hereにはprojectのurlを埋め込みハイパーリンクにする
+    msg = f"*【Empatec Project \for Today】*\ntitle: *{project['title']}*\ngroup: *{project['group_name']}*\ncountry: *{project['country']}*\n\n{project['intro']}\nFor more details, visit *<{project['url']}|here>*"
+    # slackに投稿
+    url = keys["slack"]["project"]
+    data = {
+        "text": msg
+    }
+    requests.post(url, json=data)
+    # 投稿した日付をhasuraを使ってDBに記録
+    # 今日の日付を取得
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # slackキーの値を更新
+    project["post"]["slack"] = today
+
+    # GraphQLのmutationを定義
+    mutation = '''
+        mutation updateProject($id: Int!, $post: jsonb) {
+          update_Project(where: {id: {_eq: $id}}, _set: {post: $post}) {
+            affected_rows
+          }
+        }
+        '''
+
+    url = keys["api_urls"]["hasura"]
+    headers = {
+        "Content-Type": "application/json",
+        "x-hasura-admin-secret": keys["API_KEYS"]["HASURA"]
+    }
+    variables = {
+        "id": project["id"],
+        "post": project["post"]
+    }
+    response = requests.post(url, headers=headers, json={
+        "query": mutation, "variables": variables})
+    return response.json()
