@@ -170,10 +170,38 @@ def getProject():
     return data["data"]["Project"][0]
 
 
+def getTech():
+    # GraphQLのクエリを定義
+    query = """
+    {
+    DeepTech(limit: 1, where: { post: { _contains: { slack: "" } } }
+    ) {
+        title
+        intro
+        id
+        post
+    }
+    }
+    """
+    # GraphQLのエンドポイント
+    url = keys["api_urls"]["hasura"]
+    # ヘッダーの設定
+    headers = {
+        "Content-Type": "application/json",
+        "x-hasura-admin-secret": keys["API_KEYS"]["HASURA"]
+    }
+    # リクエストの送信
+    response = requests.post(url, headers=headers, json={"query": query})
+    # 結果の取得
+    data = response.json()
+    # 結果を返す
+    return data["data"]["DeepTech"][0]
+
+
 def postProject(project):
     # slackに投稿するメッセージの作成
     # hereにはprojectのurlを埋め込みハイパーリンクにする
-    msg = f"*【Empatec Project \for Today】*\ntitle: *{project['title']}*\ngroup: *{project['group_name']}*\ncountry: *{project['country']}*\n\n{project['intro']}\nFor more details, visit *<{project['url']}|here>*"
+    msg = f"*【Empatec Project \\for Today】*\ntitle: *{project['title']}*\ngroup: *{project['group_name']}*\ncountry: *{project['country']}*\n\n{project['intro']}\nFor more details, visit *<{project['url']}|here>*"
     # slackに投稿
     url = keys["slack"]["project"]
     data = {
@@ -204,6 +232,45 @@ def postProject(project):
     variables = {
         "id": project["id"],
         "post": project["post"]
+    }
+    response = requests.post(url, headers=headers, json={
+        "query": mutation, "variables": variables})
+    return response.json()
+
+
+def postTech(tech):
+    # slackに投稿するメッセージの作成
+    msg = f"*【Deep Tech \\for Today】*\ntitle: *{tech['title']}*\n\n{tech['intro']}"
+    # slackに投稿
+    url = keys["slack"]["tech"]
+    data = {
+        "text": msg
+    }
+    requests.post(url, json=data)
+    # 投稿した日付をhasuraを使ってDBに記録
+    # 今日の日付を取得
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # slackキーの値を更新
+    tech["post"]["slack"] = today
+
+    # GraphQLのmutationを定義
+    mutation = '''
+        mutation updateDeepTech($id: Int!, $post: jsonb) {
+          update_DeepTech(where: {id: {_eq: $id}}, _set: {post: $post}) {
+            affected_rows
+          }
+        }
+        '''
+
+    url = keys["api_urls"]["hasura"]
+    headers = {
+        "Content-Type": "application/json",
+        "x-hasura-admin-secret": keys["API_KEYS"]["HASURA"]
+    }
+    variables = {
+        "id": tech["id"],
+        "post": tech["post"]
     }
     response = requests.post(url, headers=headers, json={
         "query": mutation, "variables": variables})
